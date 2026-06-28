@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Владимир Игнатьев</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   DESIGN TOKENS  –  всё темизируется отсюда; при переносе в React это :root
+   ========================================================================= */
+:root{
+  --bg:#0b0e14;
+  --bg-elev:#11161f;
+  --bg-elev-2:#161d29;
+  --bg-glow-1:rgba(124,92,255,.18);
+  --bg-glow-2:rgba(45,212,191,.14);
+  --border:#222b3a;
+  --border-soft:#1a2230;
+  --text:#e8eef6;
+  --text-dim:#9aa7b8;
+  --text-mut:#5e6b7e;
+  --accent:#7c5cff;          /* violet */
+  --accent-2:#2dd4bf;        /* teal   */
+  --accent-3:#ffb86b;        /* warm    */
+  --grad:linear-gradient(135deg,var(--accent),var(--accent-2));
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --radius:16px;
+  --radius-sm:10px;
+  --maxw:1080px;
+  --gap:28px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+  overflow-x:hidden;
+}
+/* ambient glows */
+body::before,body::after{
+  content:"";position:fixed;z-index:0;pointer-events:none;filter:blur(90px);
+  width:520px;height:520px;border-radius:50%;
+}
+body::before{background:var(--bg-glow-1);top:-160px;left:-120px}
+body::after{background:var(--bg-glow-2);bottom:-180px;right:-140px}
+
+.page{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:46px 26px 70px}
+
+/* faint grid backdrop */
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+  background-image:linear-gradient(var(--border-soft) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--border-soft) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(circle at 50% 35%,#000 0%,transparent 72%);
+}
+
+a{color:inherit;text-decoration:none}
+
+/* =========================================================================
+   TOP BAR  – терминальная шапка-«окно»
+   ========================================================================= */
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg-elev);border:1px solid var(--border);
+  border-radius:12px;padding:11px 16px;margin-bottom:30px;
+  font-family:var(--mono);font-size:13px;color:var(--text-dim);
+}
+.dots{display:flex;gap:7px;margin-right:8px}
+.dots i{width:11px;height:11px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#ff5f57}
+.dots i:nth-child(2){background:#febc2e}
+.dots i:nth-child(3){background:#28c840}
+.topbar .path{color:var(--text-mut)}
+.topbar .cmd{color:var(--accent-2)}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--accent-2);
+  margin-left:4px;transform:translateY(2px);animation:blink 1.15s steps(2) infinite}
+@keyframes blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+
+/* =========================================================================
+   LAYOUT
+   ========================================================================= */
+.layout{display:grid;grid-template-columns:320px 1fr;gap:var(--gap);align-items:start}
+.sidebar{position:sticky;top:24px;display:flex;flex-direction:column;gap:18px}
+
+/* =========================================================================
+   IDENTITY CARD
+   ========================================================================= */
+.card{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.id-card{text-align:center;position:relative;overflow:hidden}
+.id-card::before{content:"";position:absolute;inset:0;height:78px;background:var(--grad);opacity:.16}
+.avatar{
+  width:118px;height:118px;border-radius:50%;margin:8px auto 14px;position:relative;
+  display:grid;place-items:center;
+  background:var(--bg-elev-2);
+  border:2px solid transparent;
+  background-image:linear-gradient(var(--bg-elev-2),var(--bg-elev-2)),var(--grad);
+  background-origin:border-box;background-clip:content-box,border-box;
+  z-index:1;
+}
+.avatar span{font-family:var(--mono);font-size:34px;font-weight:700;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.avatar small{position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);
+  color:var(--text-mut);padding:2px 8px;border-radius:20px;white-space:nowrap}
+.id-card h1{font-size:23px;font-weight:800;letter-spacing:-.4px;margin-top:6px}
+.id-card .role{
+  display:inline-block;margin-top:9px;font-family:var(--mono);font-size:12.5px;
+  font-weight:600;color:var(--accent-2);
+  border:1px solid var(--border);border-radius:30px;padding:5px 14px;background:var(--bg-elev-2);
+}
+.salary{margin-top:14px;font-size:13px;color:var(--text-dim)}
+.salary b{color:var(--text);font-weight:700}
+
+/* contacts */
+.contacts{list-style:none;display:flex;flex-direction:column;gap:2px}
+.contacts li a,.contacts li span{display:flex;align-items:center;gap:11px;
+  padding:8px 9px;border-radius:var(--radius-sm);font-size:13.5px;color:var(--text-dim);
+  transition:.18s}
+.contacts li a:hover{background:var(--bg-elev-2);color:var(--text);transform:translateX(2px)}
+.contacts .ic{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;
+  border-radius:8px;background:var(--bg-elev-2);border:1px solid var(--border-soft)}
+.contacts svg{width:15px;height:15px;stroke:var(--accent-2);fill:none;stroke-width:1.9}
+
+/* generic block heading inside sidebar */
+.blk-h{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text-mut);margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.blk-h::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* skills */
+.tier-lbl{font-family:var(--mono);font-size:11px;color:var(--accent-2);margin:2px 0 9px}
+.tier-lbl.dim{color:var(--accent-3)}
+.tier-lbl.dim+ .chips .chip{border-style:dashed;color:var(--text-dim)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:8px;
+  background:var(--bg-elev-2);border:1px solid var(--border);color:var(--text);transition:.18s}
+.chip:hover{border-color:var(--accent);color:#fff;transform:translateY(-2px)}
+
+/* langs */
+.lang{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;font-size:13.5px}
+.lang:last-child{margin-bottom:0}
+.lang b{font-weight:600}
+.lvl{display:flex;gap:4px}
+.lvl i{width:9px;height:9px;border-radius:50%;background:var(--bg-elev-2);border:1px solid var(--border)}
+.lvl i.on{background:var(--grad);border-color:transparent}
+
+/* =========================================================================
+   MAIN COLUMN
+   ========================================================================= */
+.main{display:flex;flex-direction:column;gap:var(--gap)}
+.section{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);
+  padding:26px 28px}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.sec-h .num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.sec-h h2{font-size:18px;font-weight:700;letter-spacing:-.2px}
+.sec-h .tag{font-family:var(--mono);font-size:11px;color:var(--text-mut);margin-left:auto}
+
+.about p{color:var(--text-dim);font-size:14.5px;margin-bottom:12px}
+.about p:last-child{margin-bottom:0}
+.about strong{color:var(--text);font-weight:600}
+
+/* timeline (experience) */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(var(--accent),var(--accent-2),transparent)}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-item:last-child{margin-bottom:0}
+.tl-item::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;
+  border-radius:50%;background:var(--bg);border:3px solid var(--accent)}
+.tl-item.alt::before{border-color:var(--accent-2)}
+.tl-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:3px}
+.tl-top h3{font-size:15.5px;font-weight:700}
+.tl-meta{font-family:var(--mono);font-size:11.5px;color:var(--accent-2);
+  background:var(--bg-elev-2);border:1px solid var(--border);padding:2px 9px;border-radius:20px;
+  margin-left:auto;white-space:nowrap}
+.tl-sub{font-size:13px;color:var(--text-mut);margin-bottom:10px}
+.bul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.bul li{position:relative;padding-left:18px;font-size:13.5px;color:var(--text-dim)}
+.bul li::before{content:"▸";position:absolute;left:0;color:var(--accent-2);font-size:12px}
+.bul strong{color:var(--text);font-weight:600}
+
+/* project cards */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.proj{background:var(--bg-elev-2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:18px;display:flex;flex-direction:column;gap:11px;transition:.2s;position:relative;overflow:hidden}
+.proj::before{content:"";position:absolute;left:0;top:0;height:3px;width:100%;
+  background:var(--grad);transform:scaleX(0);transform-origin:left;transition:.25s}
+.proj:hover{transform:translateY(-4px);border-color:var(--accent)}
+.proj:hover::before{transform:scaleX(1)}
+.proj.feature{grid-column:1 / -1}
+.proj-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.proj-top h3{font-size:15px;font-weight:700;line-height:1.35}
+.proj-top h3 .star{color:var(--accent-3);font-size:12px}
+.proj .lnk{font-family:var(--mono);font-size:11px;color:var(--accent-2);display:inline-flex;
+  align-items:center;gap:5px;white-space:nowrap}
+.proj .lnk:hover{text-decoration:underline}
+.proj .lnk.pending{color:var(--text-mut)}
+.proj-stack{display:flex;flex-wrap:wrap;gap:6px}
+.proj-stack span{font-family:var(--mono);font-size:10.5px;color:var(--text-dim);
+  background:var(--bg-elev);border:1px solid var(--border-soft);padding:3px 8px;border-radius:6px}
+.proj-desc{font-size:13px;color:var(--text-dim)}
+.proj-desc strong{color:var(--text);font-weight:600}
+.proj .bul li{font-size:12.5px}
+.self-note{font-family:var(--mono);font-size:11px;color:var(--accent-3);
+  display:inline-flex;align-items:center;gap:6px;margin-top:2px}
+
+/* education + courses grid */
+.edu-item{margin-bottom:18px}
+.edu-item:last-child{margin-bottom:0}
+.edu-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.edu-top h3{font-size:14.5px;font-weight:700}
+.edu-top .yr{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-left:auto}
+.edu-item p{font-size:13px;color:var(--text-dim);margin-top:2px}
+.badge{display:inline-block;margin-top:7px;font-size:11.5px;font-family:var(--mono);
+  background:var(--bg-elev-2);border:1px solid var(--border);color:var(--accent);
+  padding:4px 10px;border-radius:8px}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+
+.course{display:flex;gap:12px;align-items:flex-start;margin-bottom:13px}
+.course:last-child{margin-bottom:0}
+.course .yr{font-family:var(--mono);font-size:12px;color:var(--accent-2);flex:0 0 42px}
+.course b{font-size:13.5px;font-weight:600}
+.course span{font-size:12.5px;color:var(--text-mut);display:block}
+
+/* qualities / extra as labelled rows */
+.qrow{display:flex;gap:11px;font-size:13.5px;color:var(--text-dim);margin-bottom:11px}
+.qrow:last-child{margin-bottom:0}
+.qrow b{color:var(--text);font-weight:600}
+.qrow .k{flex:0 0 26px;height:26px;display:grid;place-items:center;border-radius:8px;
+  background:var(--bg-elev-2);border:1px solid var(--border-soft);font-size:14px}
+
+/* footer */
+.foot{text-align:center;margin-top:34px;font-family:var(--mono);font-size:11.5px;color:var(--text-mut)}
+.foot b{color:var(--accent-2)}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(16px);transition:.6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .proj-grid{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .page{padding:26px 14px 50px}
+  .topbar{font-size:11px}
+  .tl-meta{margin-left:0}
+}
+@media print{
+  body{background:#fff;color:#111}
+  body::before,body::after,.grid-bg,.cursor{display:none}
+  .card,.section,.proj{border-color:#ddd;background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="page">
+
+  <!-- terminal topbar -->
+  <div class="topbar">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <span class="path">~/vladimir/resume</span>
+    <span>–</span>
+    <span class="cmd">whoami</span>
+    <span class="cursor"></span>
+  </div>
+
+  <div class="layout">
+
+    <!-- ============================ SIDEBAR ============================ -->
+    <aside class="sidebar">
+
+      <div class="card id-card reveal">
+        <div class="avatar"><span>ВИ</span><small>📷 фото</small></div>
+        <h1>Владимир Игнатьев</h1>
+        <div class="role">&lt;Fullstack&nbsp;Developer/&gt;</div>
+        <div class="salary">Ожидания: <b>от 120 000 ₽</b></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="blk-h">контакты</div>
+        <ul class="contacts">
+          <li><span><span class="ic"><svg viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>Москва, Россия</span></li>
+          <li><a href="tel:+79932852024"><span class="ic"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg></span>+7 (993) 285-20-24</a></li>
+          <li><a href="mailto:vovurlav@mail.ru"><span class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>vovurlav@mail.ru</a></li>
+          <li><a href="https://t.me/vove4" target="_blank"><span class="ic"><svg viewBox="0 0 24 24"><path d="m22 3-10 9M22 3l-7 18-4-8-8-4 19-6Z"/></svg></span>@vove4</a></li>
+          <li><a href="https://github.com/vovabullet" target="_blank"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-1-2.6c3-.3 6-1.5 6-6.6a5 5 0 0 0-1.4-3.5 4.7 4.7 0 0 0-.1-3.5s-1.1-.3-3.6 1.4a12 12 0 0 0-6.4 0C6.1.4 5 .7 5 .7a4.7 4.7 0 0 0-.1 3.5A5 5 0 0 0 3.5 7.7c0 5 3 6.3 5.9 6.6a3.4 3.4 0 0 0-1 2.6V21"/></svg></span>github.com/vovabullet</a></li>
+        </ul>
+      </div>
+
+      <div class="card reveal">
+        <div class="blk-h">формат работы</div>
+        <div class="chips">
+          <span class="chip">удалённо</span>
+          <span class="chip">гибрид</span>
+          <span class="chip">офис</span>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="blk-h">навыки</div>
+        <div class="tier-lbl">// уверенно</div>
+        <div class="chips">
+          <span class="chip">Java</span><span class="chip">Spring&nbsp;Boot</span>
+          <span class="chip">REST&nbsp;API</span><span class="chip">JWT&nbsp;/&nbsp;Security</span>
+          <span class="chip">JPA&nbsp;/&nbsp;Hibernate</span><span class="chip">PostgreSQL</span>
+          <span class="chip">MySQL</span><span class="chip">SQL</span>
+          <span class="chip">JavaScript</span><span class="chip">HTML5</span><span class="chip">CSS</span>
+          <span class="chip">Thymeleaf</span><span class="chip">Python</span><span class="chip">Bash</span>
+          <span class="chip">Docker</span><span class="chip">Git</span><span class="chip">Maven</span>
+          <span class="chip">OpenAPI&nbsp;/&nbsp;Swagger</span><span class="chip">JUnit</span>
+          <span class="chip">Gatling</span><span class="chip">ELK</span><span class="chip">Grafana</span>
+        </div>
+        <div class="tier-lbl dim">// осваиваю</div>
+        <div class="chips">
+          <span class="chip">React</span><span class="chip">Django</span><span class="chip">FastAPI</span>
+          <span class="chip">Node.js</span><span class="chip">Express</span>
+          <span class="chip">Socket.io</span><span class="chip">CI/CD</span><span class="chip">gRPC</span>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="blk-h">языки</div>
+        <div class="lang"><b>Русский</b><span class="lvl"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div class="lang"><b>Английский · B1</b><span class="lvl"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+        <div class="lang"><b>Испанский · A1</b><span class="lvl"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+      </div>
+
+    </aside>
+
+    <!-- ============================ MAIN ============================ -->
+    <main class="main">
+
+      <section class="section about reveal">
+        <div class="sec-h"><span class="num">01</span><h2>О себе</h2><span class="tag">// about</span></div>
+        <p>Fullstack-разработчик с фокусом на <strong>Java / Spring Boot</strong> и веб-разработке.
+        Год коммерческого опыта в разработке и поддержке CRM-системы для складских предприятий
+        (компания <strong>EME</strong>, один из лидеров рынка WMS в России). Самостоятельно
+        спроектировал и реализовал дипломную CRM-систему промышленного уровня – с REST API,
+        JWT-безопасностью, контейнеризацией, централизованным логированием (ELK) и нагрузочным
+        тестированием.</p>
+        <p>Любознательный, быстро осваиваю новое. Комфортно работаю в команде и по технической документации. Окончил
+        курсы графического дизайна – это помогает с UI и аккуратной вёрсткой. Сейчас углубляюсь
+        во fullstack: осваиваю <strong>React</strong> и <strong>Django / FastAPI</strong>.</p>
+      </section>
+
+      <section class="section reveal">
+        <div class="sec-h"><span class="num">02</span><h2>Опыт работы</h2><span class="tag">// experience</span></div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-top"><h3>Программист – EME</h3><span class="tl-meta">Июль 2025 – Июнь 2026</span></div>
+            <div class="tl-sub">ПО для складских предприятий (WMS) · Москва · ~1 год</div>
+            <ul class="bul">
+              <li>Разрабатывал кросс-платформенное клиентское приложение CRM на <strong>Java</strong> (Android, Windows, Linux).</li>
+              <li>Разрабатывал мобильное приложение для терминалов сбора данных (ТСД) на <strong>Java</strong> (Android).</li>
+              <li>Писал скрипты автоматизации бизнес-процессов на <strong>JavaScript, Python и Bash</strong>.</li>
+              <li>Реализовывал бизнес-процессы на внутреннем DSL компании (<strong>EMEL</strong>).</li>
+              <li>Участвовал в коммуникации с клиентами: сбор требований и поиск оптимальных решений.</li>
+              <li>Работал в команде над legacy-кодом по технической документации.</li>
+            </ul>
+          </div>
+          <div class="tl-item alt">
+            <div class="tl-top"><h3>Производственная практика – ГВЦ РЖД</h3><span class="tl-meta">Июнь – Июль 2023</span></div>
+            <div class="tl-sub">Главный вычислительный центр РЖД · Москва · 2 месяца</div>
+            <ul class="bul">
+              <li>Сопровождение корпоративной системы <strong>SAP</strong>: поддержка пользователей и бизнес-процессов.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="sec-h"><span class="num">03</span><h2>Проекты</h2><span class="tag">// projects</span></div>
+        <div class="proj-grid">
+
+          <article class="proj feature">
+            <div class="proj-top">
+              <h3>Autoservice CRM – дипломный проект</h3>
+              <a class="lnk" href="https://github.com/vovabullet/autoservice" target="_blank">↗ github</a>
+            </div>
+            <div class="proj-stack"><span>Java 21</span><span>Spring Boot</span><span>Spring Security</span><span>PostgreSQL</span><span>Docker</span><span>ELK</span><span>Gatling</span></div>
+            <p class="proj-desc">CRM для автосервиса: клиенты и автомобили, заказы с жизненным циклом
+            статусов, услуги, рабочие задачи механиков и акты осмотра с фотофиксацией.</p>
+            <ul class="bul">
+              <li>Спроектировал <strong>REST API</strong> на Spring Boot с чистой слоистой архитектурой (controller / service / repository / DTO / mapper).</li>
+              <li><strong>JWT-аутентификация</strong> на Spring Security с ролевой моделью доступа; доменные жизненные циклы заявок и задач.</li>
+              <li><strong>PostgreSQL</strong> (JPA/Hibernate), документация API через <strong>OpenAPI/Swagger</strong>, глобальная обработка ошибок и валидация.</li>
+              <li>Контейнеризация в <strong>Docker Compose</strong>, централизованные логи через <strong>ELK</strong>, нагрузочное тестирование <strong>Gatling</strong>.</li>
+              <li>Проектная документация: UML/BPMN-диаграммы; веб-клиент на HTML/CSS/JavaScript поверх API.</li>
+            </ul>
+          </article>
+
+          <article class="proj">
+            <div class="proj-top">
+              <h3>Hard-Loot – 2D action-roguelike</h3>
+              <a class="lnk" href="https://github.com/vovabullet/Hard-Loot" target="_blank">↗ github</a>
+            </div>
+            <div class="proj-stack"><span>Godot</span><span>GDScript</span><span>Tilemap</span></div>
+            <p class="proj-desc">Top-down 2D action-roguelike с перманентной смертью и рандомным
+            лутом: короткие напряжённые вылазки в опасные зоны ради добычи.</p>
+            <ul class="bul">
+              <li>Боевая база на <strong>стамине</strong>: бег, атака, блок, отталкивание и фидбек ударов.</li>
+              <li><strong>Data-driven</strong> лут (префиксы, суффиксы, редкости) на JSON-таблицах; инвентарь-сетка с drag&amp;drop.</li>
+              <li>Враги на конечных автоматах (<strong>State Machine</strong>: патруль → агро → атака → отступ); фиксированная карта с рандомным наполнением.</li>
+            </ul>
+          </article>
+
+          <article class="proj">
+            <div class="proj-top">
+              <h3>al-co – мультиплеер для вечеринок</h3>
+              <a class="lnk" href="https://github.com/vovabullet/al-co" target="_blank">↗ github</a>
+            </div>
+            <div class="proj-stack"><span>Node.js</span><span>Express</span><span>Socket.io</span><span>Phaser 3</span></div>
+            <p class="proj-desc">Party-игра для компании (формат вечериночной drinking game):
+            игроки подключаются с телефонов по <strong>QR-коду</strong>, а общим экраном выступает любой десктоп.</p>
+            <ul class="bul">
+              <li><strong>Real-time</strong> на <strong>Socket.io (WebSocket)</strong>: серверная маршрутизация событий, авторитетное состояние на сервере.</li>
+              <li><strong>Телефон как геймпад</strong>: динамическая смена контроллера (джойстик, кнопки, тапы) под мини-игру.</li>
+              <li>Контент-движок на JSON-колодах и набор мини-игр на <strong>Phaser 3</strong>.</li>
+            </ul>
+          </article>
+
+        </div>
+      </section>
+
+      <div class="two-col">
+        <section class="section reveal">
+          <div class="sec-h"><span class="num">04</span><h2>Образование</h2></div>
+          <div class="edu-item">
+            <div class="edu-top"><h3>Бакалавриат</h3><span class="yr">2026</span></div>
+            <p><strong>Российский университет транспорта (МИИТ), Москва</strong></p>
+            <p>Информатика и вычислительная техника, ПО вычислительной техники и автоматизированных систем</p>
+            <span class="badge">+ доп. диплом: Машинное обучение</span>
+          </div>
+          <div class="edu-item">
+            <div class="edu-top"><h3>Среднее специальное</h3><span class="yr">2020</span></div>
+            <p><strong>Политехнический колледж им. П.А. Овчинникова №13, Москва</strong></p>
+            <p>Станочник широкого профиля, Оператор станка с ЧПУ</p>
+          </div>
+        </section>
+
+        <section class="section reveal">
+          <div class="sec-h"><span class="num">05</span><h2>Курсы</h2></div>
+          <div class="course"><span class="yr">2022</span><div><b>Python-разработка</b><span>Яндекс.Практикум</span></div></div>
+          <div class="course"><span class="yr">2021</span><div><b>Frontend-разработка</b><span>Яндекс.Практикум</span></div></div>
+          <div class="course"><span class="yr">2023</span><div><b>Графический дизайн</b><span>Чувство UI</span></div></div>
+        </section>
+      </div>
+
+      <div class="two-col">
+        <section class="section reveal">
+          <div class="sec-h"><span class="num">06</span><h2>Личные качества</h2></div>
+          <div class="qrow"><span class="k">⚡</span><div><b>Быстро обучаюсь.</b> Осваиваю новые технологии и инструменты в сжатые сроки.</div></div>
+          <div class="qrow"><span class="k">🤝</span><div><b>Работаю в команде.</b> На прошлой работе участвовал в сборе требований и общении с клиентами – умею понять задачу и предложить решение.</div></div>
+          <div class="qrow"><span class="k">🔍</span><div><b>Внимателен к деталям.</b> Привык работать по технической документации и доводить задачи до конца, не накапливая мелких ошибок.</div></div>
+          <div class="qrow"><span class="k">🧩</span><div><b>Любознательный и ответственный.</b> Сам ищу, как сделать лучше, и беру задачи под свою ответственность.</div></div>
+          <div class="qrow"><span class="k">🛠️</span><div><b>Широкий технический кругозор.</b> Разбираюсь в компьютерном железе; для друзей я личная техподдержка по любым вопросам с техникой.</div></div>
+        </section>
+
+        <section class="section reveal">
+          <div class="sec-h"><span class="num">07</span><h2>Дополнительно</h2></div>
+          <div class="qrow"><span class="k">🎨</span><div><b>Дизайн и творчество.</b> Окончил курсы графического дизайна, рисую, занимался видеомонтажом и участвовал в межшкольных выставках.</div></div>
+          <div class="qrow"><span class="k">🏊</span><div><b>Спорт.</b> Занимался плаванием, академической греблей и лыжами, более 3 лет регулярно тренируюсь в зале.</div></div>
+          <div class="qrow"><span class="k">🔧</span><div><b>Умею работать руками.</b> Занимаюсь ремонтом, строительством и обслуживанием своего автомобиля.</div></div>
+          <div class="qrow"><span class="k">🐙</span><div><b>Открытый код.</b> Более 30 репозиториев на GitHub – постоянная самостоятельная практика в различных сферах программирования.</div></div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+/* лёгкий reveal-on-scroll; в React это превратится в useEffect + IntersectionObserver */
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*60)+'ms';io.observe(el)});
+</script>
+</body>
+</html>
