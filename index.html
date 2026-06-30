@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================================================
-   DESIGN TOKENS  –  всё темизируется отсюда; при переносе в React это :root
+   DESIGN TOKENS
    ========================================================================= */
 :root{
   --bg:#0b0e14;
@@ -286,7 +286,7 @@ a{color:inherit;text-decoration:none}
     <aside class="sidebar">
 
       <div class="card id-card reveal">
-        <div class="avatar"><span>ВИ</span></div>
+        <div class="avatar"></div>
         <h1>Владимир Игнатьев</h1>
         <div class="role">&lt;Fullstack&nbsp;Developer/&gt;</div>
         <div class="salary">Ожидания: <b>от 120 000 ₽</b></div>
@@ -321,15 +321,15 @@ a{color:inherit;text-decoration:none}
           <span class="chip">JPA&nbsp;/&nbsp;Hibernate</span><span class="chip">PostgreSQL</span>
           <span class="chip">MySQL</span><span class="chip">SQL</span>
           <span class="chip">JavaScript</span><span class="chip">HTML5</span><span class="chip">CSS</span>
-          <span class="chip">Thymeleaf</span><span class="chip">Python</span><span class="chip">Bash</span>
+          <span class="chip">Python</span><span class="chip">Bash</span>
           <span class="chip">Docker</span><span class="chip">Git</span><span class="chip">Maven</span>
           <span class="chip">OpenAPI&nbsp;/&nbsp;Swagger</span><span class="chip">JUnit</span>
-          <span class="chip">Gatling</span><span class="chip">ELK</span><span class="chip">Grafana</span>
+          <span class="chip">ELK</span>
         </div>
         <div class="tier-lbl dim">// осваиваю</div>
         <div class="chips">
           <span class="chip">React</span><span class="chip">Django</span><span class="chip">FastAPI</span>
-          <span class="chip">Node.js</span><span class="chip">Express</span>
+          <span class="chip">Node.js</span><span class="chip">Grafana</span>
           <span class="chip">Socket.io</span><span class="chip">CI/CD</span><span class="chip">gRPC</span>
         </div>
       </div>
@@ -350,9 +350,8 @@ a{color:inherit;text-decoration:none}
         <div class="sec-h"><span class="num">01</span><h2>О себе</h2><span class="tag">// about</span></div>
         <p>Fullstack-разработчик с фокусом на <strong>Java / Spring Boot</strong> и веб-разработке.
         Год коммерческого опыта в разработке и поддержке CRM-системы для складских предприятий
-        (компания <strong>EME</strong>, один из лидеров рынка WMS в России). Спроектировал и реализовал дипломную CRM-систему с REST API,
-        JWT-безопасностью, контейнеризацией, централизованным логированием (ELK) и нагрузочным
-        тестированием.</p>
+        (компания <strong>EME</strong>, один из лидеров рынка WMS в России). 
+        Спроектировал и реализовал CRM-систему с REST API, JWT-безопасностью, контейнеризацией, централизованным логированием (ELK) и нагрузочным тестированием.</p>
         <p>Сейчас углубляюсь во fullstack: осваиваю <strong>React</strong> и <strong>Django / FastAPI</strong>.</p>
       </section>
 
@@ -387,12 +386,12 @@ a{color:inherit;text-decoration:none}
 
           <article class="proj feature">
             <div class="proj-top">
-              <h3>Autoservice CRM – дипломный проект</h3>
+              <h3>Autoservice CRM – CRM-система для автосервиса</h3>
               <a class="lnk" href="https://github.com/vovabullet/autoservice" target="_blank">↗ github</a>
             </div>
             <div class="proj-stack"><span>Java 21</span><span>Spring Boot</span><span>Spring Security</span><span>PostgreSQL</span><span>Docker</span><span>ELK</span><span>Gatling</span></div>
-            <p class="proj-desc">CRM для автосервиса: клиенты и автомобили, заказы с жизненным циклом
-            статусов, услуги, рабочие задачи механиков и акты осмотра с фотофиксацией.</p>
+            <p class="proj-desc">Коммерческая разработка по заказу клиента, выполненная самостоятельно от архитектуры до деплоя (легла в основу дипломной работы).
+            CRM для автосервиса: клиенты и автомобили, заказы с жизненным циклом статусов, услуги, рабочие задачи механиков и акты осмотра с фотофиксацией.</p>
             <ul class="bul">
               <li>Спроектировал <strong>REST API</strong> на Spring Boot с чистой слоистой архитектурой (controller / service / repository / DTO / mapper).</li>
               <li><strong>JWT-аутентификация</strong> на Spring Security с ролевой моделью доступа; доменные жизненные циклы заявок и задач.</li>
@@ -423,8 +422,9 @@ a{color:inherit;text-decoration:none}
               <a class="lnk" href="https://github.com/vovabullet/al-co" target="_blank">↗ github</a>
             </div>
             <div class="proj-stack"><span>Node.js</span><span>Express</span><span>Socket.io</span><span>Phaser 3</span></div>
-            <p class="proj-desc">Party-игра для компании (формат вечериночной drinking game):
-            игроки подключаются с телефонов по <strong>QR-коду</strong>, а общим экраном выступает любой десктоп.</p>
+            <p class="proj-desc">Party-игра для компании:
+            игроки подключаются с телефонов по <strong>QR-коду</strong>, а общим экраном выступает любой десктоп.
+            Изначально разрабатывалась как игра для своей компании друзей; сейчас планирую вывести в продажу.</p>
             <ul class="bul">
               <li><strong>Real-time</strong> на <strong>Socket.io (WebSocket)</strong>: серверная маршрутизация событий, авторитетное состояние на сервере.</li>
               <li><strong>Телефон как геймпад</strong>: динамическая смена контроллера (джойстик, кнопки, тапы) под мини-игру.</li>
@@ -453,9 +453,9 @@ a{color:inherit;text-decoration:none}
 
         <section class="section reveal">
           <div class="sec-h"><span class="num">05</span><h2>Курсы</h2></div>
+          <div class="course"><span class="yr">2023</span><div><b>Графический дизайн</b><span>Чувство UI</span></div></div>
           <div class="course"><span class="yr">2022</span><div><b>Python-разработка</b><span>Яндекс.Практикум</span></div></div>
           <div class="course"><span class="yr">2021</span><div><b>Frontend-разработка</b><span>Яндекс.Практикум</span></div></div>
-          <div class="course"><span class="yr">2023</span><div><b>Графический дизайн</b><span>Чувство UI</span></div></div>
         </section>
       </div>
 
@@ -474,7 +474,7 @@ a{color:inherit;text-decoration:none}
           <div class="qrow"><span class="k">🎨</span><div><b>Дизайн и творчество.</b> Окончил курсы графического дизайна, рисую, занимался видеомонтажом и участвовал в межшкольных выставках.</div></div>
           <div class="qrow"><span class="k">🏊</span><div><b>Спорт.</b> Занимался плаванием, академической греблей и лыжами, более 3 лет регулярно тренируюсь в зале.</div></div>
           <div class="qrow"><span class="k">🔧</span><div><b>Умею работать руками.</b> Занимаюсь ремонтом, строительством и обслуживанием своего автомобиля.</div></div>
-          <div class="qrow"><span class="k">🐙</span><div><b>Открытый код.</b> Более 30 репозиториев на GitHub – постоянная самостоятельная практика в различных сферах программирования: от проектов на Spring Boot/Django до экспериментов с геймдевом и ИИ</div></div>
+          <div class="qrow"><span class="k">🐙</span><div><b>Открытый код.</b> Более 30 репозиториев на GitHub – от проектов на Spring Boot/Django до экспериментов с геймдевом и ИИ</div></div>
         </section>
       </div>
 
@@ -483,7 +483,6 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <script>
-/* лёгкий reveal-on-scroll; в React это превратится в useEffect + IntersectionObserver */
 const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*60)+'ms';io.observe(el)});
 </script>
